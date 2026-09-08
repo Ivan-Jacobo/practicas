@@ -1,13 +1,13 @@
-                  # DADA2 de sujetos sanos #
+# DADA2 de sujetos sanos #
 
 
 
 #                   - Fase 1 -
 
-via_F <- "../../../../../../../media/DiscoDuroExterno/Ivan/Ivan/cushing_longitudinal/Run_descargas/fastq_1_y_2/_1.fastq"
+via_F <- "../../../../../../../media/DiscoDuroExterno/Ivan/Ivan/cushing_longitudinal/sujetos_obesos_cushing_recuperados/Run_descargas/fastq_1_y_2/_1.fastq"
 list.files(via_F)
 
-via_R <- "../../../../../../../media/DiscoDuroExterno/Ivan/Ivan/cushing_longitudinal/Run_descargas/fastq_1_y_2/_2.fastq"
+via_R <- "../../../../../../../media/DiscoDuroExterno/Ivan/Ivan/cushing_longitudinal/sujetos_obesos_cushing_recuperados/Run_descargas/fastq_1_y_2/_2.fastq"
 list.files(via_R)
 
 # fastq fordwrard -> sort= ordena, vía = ubicación, pattern = patron de busueda.
@@ -47,9 +47,9 @@ nombres.muestra_2 <- sapply(strsplit(basename(FqR), "_"), `[`, 1)
 
 #                     - Fase 4 -
 
-  # Filtrar de acuerdo a la calidad phred, necesito que sea mayor a 30
-  # primero hay que generar una carpeta donde se guardarán las secuencias
-  # filtradas y recortadas
+# Filtrar de acuerdo a la calidad phred, necesito que sea mayor a 30
+# primero hay que generar una carpeta donde se guardarán las secuencias
+# filtradas y recortadas
 
 # Place filtered files in filtered/ subdirectory
 filtroFqF <- file.path(via_F, "filtered", paste0(nombres.muestra, "_F_filtro.fastq.gz"))
@@ -255,8 +255,8 @@ rownames(metadatos_bacterias) <- metadatos_bacterias$Run
 View(metadatos_bacterias)
 
 ps_cs_lg_sanos <- phyloseq(otu_table(tabla_forward_reverse.nochim, taxa_are_rows=FALSE), 
-               sample_data(metadatos_bacterias), 
-               tax_table(taxa))
+                           sample_data(metadatos_bacterias), 
+                           tax_table(taxa))
 
 ps_cs_lg_sanos
 
@@ -382,9 +382,5 @@ ggplot(df_sum_altura, aes(x = factor(height), y = Total_abundance, geom_text(0.1
   labs(x = "Estatura", y = "Abundancia total",
        title = "Abundancia total estatura") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1 )) 
-
-
-
-
 
 

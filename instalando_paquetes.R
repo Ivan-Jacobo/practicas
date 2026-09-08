@@ -1,3 +1,5 @@
+# Registro de instalaciones realizadas.
+
 library(BiocManager)
 
 install.packages("BiocManager",
@@ -74,4 +76,17 @@ devtools::install_github(
   upgrade = "never"
 )
 
+library(NetCoMi)
+library(phyloseq)
+library(dada2)
 
+
+
+BiocManager::install(
+  "dada2",
+  lib = "/home/servicio_social/R/library",
+  ask = FALSE,
+  update = FALSE
+)
+
+library(dada2)
