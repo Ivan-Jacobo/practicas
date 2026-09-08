@@ -1,8 +1,30 @@
                   # DADA2 de datos de bacterias #
 
+BiocManager::install("dada2", version = "3.16")
+install.packages("devtools")
+install.packages("BiocManager")
+BiocManager::version()
+
+devtools::install_github("benjjneb/dada2", ref="v1.16")
+library(devtools)
+
 library(dada2)
 library(phyloseq)
-hh
+install.packages("usethis")
+
+utils::install.packages("usethis")
+
+
+install.packages("fs", type = "source")
+library(fs)
+
+library(usethis)
+
+
+library(vegan)
+library(phyloseq)
+library(NetCoMi)
+
 
 #                   - Fase 1 -
 
