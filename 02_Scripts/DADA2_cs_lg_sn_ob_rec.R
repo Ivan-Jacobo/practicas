@@ -1,6 +1,6 @@
-# DADA2 de sujetos sanos #
+          # DADA2 de sujetos sanos #
 
-
+library(dada2)
 
 #                   - Fase 1 -
 
@@ -59,7 +59,7 @@ names(filtroFqR) <- nombres.muestra_2
 
 # Filtrando por calidad -> FqF entrada de datos, filtroFqF lugar donde se almacenan 
 # los datos recortados. 
-salida <- filterAndTrim(FqF, filtroFqF, FqR, filtroFqR, truncLen=c(290,240),
+salida <- filterAndTrim(FqF, filtroFqF, FqR, filtroFqR, truncLen=c(290,280),
                         maxN=0, maxEE=c(2,4), truncQ=2, rm.phix=TRUE,
                         compress=TRUE, multithread=TRUE) # Forward corte a 280 y reverse a 240
 
@@ -69,13 +69,13 @@ salida <- filterAndTrim(FqF, filtroFqF, FqR, filtroFqR, truncLen=c(290,240),
 
 # errores forward
 errores_F <- learnErrors(filtroFqF, multithread=TRUE)
-saveRDS(errores_F,file="../../../../../../../media/DiscoDuroExterno/Ivan/Ivan/cushing_longitudinal/Run_descargas/fastq_1_y_2/_1.fastq/errF.RDS")
+saveRDS(errores_F,file="../../../../../../../media/DiscoDuroExterno/Ivan/Ivan/cushing_longitudinal/sujetos_obesos_cushing_recuperados/Run_descargas/fastq_1_y_2/errF.RDS")
 
 
 
 # errores en Reverse
 errores_R <- learnErrors(filtroFqR, multithread=TRUE)
-saveRDS(errores_R,file="../../../../../../../media/DiscoDuroExterno/Ivan/Ivan/cushing_longitudinal/Run_descargas/fastq_1_y_2/_2.fastq/errR.RDS")
+saveRDS(errores_R,file="../../../../../../../media/DiscoDuroExterno/Ivan/Ivan/cushing_longitudinal/sujetos_obesos_cushing_recuperados/Run_descargas//fastq_1_y_2/errR.RDS")
 
 
 
@@ -83,11 +83,12 @@ saveRDS(errores_R,file="../../../../../../../media/DiscoDuroExterno/Ivan/Ivan/cu
 #           - Fase 5 -
 
 # Graficas de los errores
-png("../../../Actividades/Septimo_semestre/Servicio_social/Errores/errores_F.png")
+png("03_Results/errores_F_lg_ob_cs_re.png")
 plotErrors(errores_F, nominalQ=TRUE) # Estan bien, la idea es que los puntos                                    
 dev.off()                             # mantengan la dirección de la liena roja
 # NO necesariamente tienen que estar acoplados a la perfección.
-png("../../../Actividades/Septimo_semestre/Servicio_social/Errores/Errores_R.png")
+
+png("03_Results//Errores_R_lg_ob_cs_re.png")
 plotErrors(errores_R, nominalQ=TRUE)
 dev.off()
 
@@ -110,14 +111,14 @@ dadaRs <- dada(filtroFqR, err=errores_R, multithread=TRUE)
 
 
 mergers <- mergePairs(dadaFs, filtroFqF, dadaRs, filtroFqR, verbose=TRUE)
-saveRDS(mergers, file="../../../../../../../media/DiscoDuroExterno/Ivan/Ivan/cushing_longitudinal/Run_descargas/fastq_1_y_2/_1.fastq/Forward_reverse_unidos.RDS")
+saveRDS(mergers, file="../../../../../../../media/DiscoDuroExterno/Ivan/Ivan/cushing_longitudinal/sujetos_obesos_cushing_recuperados/Run_descargas/fastq_1_y_2/Forward_reverse_unidos.RDS")
 #mergers
 
 
 tabla_forward_reverse <- makeSequenceTable(mergers)
 dim(tabla_forward_reverse)
 # Esto no lo correré----
-saveRDS(tabla_forward_reverse, file="../../../../../../../media/DiscoDuroExterno/Ivan/Ivan/cushing_longitudinal/Run_descargas/fastq_1_y_2/tabla_forward_reverse.RDS")
+saveRDS(tabla_forward_reverse, file="../../../../../../../media/DiscoDuroExterno/Ivan/Ivan/cushing_longitudinal/sujetos_obesos_cushing_recuperados/Run_descargas/fastq_1_y_2/tabla_forward_reverse.RDS")
 #tabla_forward_reverse
 
 #readRDS("../../../Actividades/Septimo_semestre/Servicio_social/tabla_forward_reverse.RDS") -> tabla_forward_reverse
@@ -143,17 +144,19 @@ rownames(track) <- nombres.muestra
 head(track)
 
 
-samdf
+
 #           - Fase 7 -
 
 # Asignación taxonomica
 taxa <- assignTaxonomy(tabla_forward_reverse.nochim, "../../../silva_nr99_v144_toGenus_trainset.fa.gz", multithread=TRUE)
-saveRDS(taxa, file="../../../../../../../media/DiscoDuroExterno/Ivan/Ivan/cushing_longitudinal/Run_descargas/fastq_1_y_2/taxa.RDS")
+saveRDS(taxa, file="../../../../../../../media/DiscoDuroExterno/Ivan/Ivan/cushing_longitudinal/sujetos_obesos_cushing_recuperados/Run_descargas/fastq_1_y_2/taxa.RDS")
 #writeRDS(file="03_Results/taxa.RDS")
 
 taxa <- addSpecies(taxa, "../../../silva_v144_assignSpecies.fa.gz")
-saveRDS(taxa, file="../../../../../../../media/DiscoDuroExterno/Ivan/Ivan/cushing_longitudinal/Run_descargas/fastq_1_y_2/taxa_especies.RDS")
-# Muy bonito y todo peor el 100% de las especies salio con NA jajaja
+#aqui voy, me falta guardarlo...
+
+saveRDS(taxa, file="../../../../../../../media/DiscoDuroExterno/Ivan/Ivan/cushing_longitudinal/sujetos_obesos_cushing_recuperados/Run_descargas/fastq_1_y_2/taxa_especies.RDS")
+# Muy bonito y todo pero el 100% de las especies salio con NA jajaja
 View(taxa)
 
 
@@ -163,18 +166,19 @@ taxa.print <- taxa # Removing sequence rownames for display only
 rownames(taxa.print) <- NULL
 head(taxa.print) # Me da una lista con la taxa y su resolución hasta nivel genero
 View(taxa.print)
-sample_data(taxa.print)
+#sample_data(taxa.print)
 
 
 # Aquí incorporare los metadatos
-read.csv("01_Raw_data/metadatos_cs_long_sanos.csv") -> metadatos_bacterias
+read.csv("01_Raw_data/metadatos_cs_long_ob_cs_rec.csv") -> metadatos_bacterias
 View(metadatos_bacterias)
 
+library(phyloseq)
 metadatos_bacterias$Run -> nombres
 
 row.names(metadatos_bacterias) <- nombres
 sample_data(metadatos_bacterias)
-saveRDS(taxa, file="../../../../../../../media/DiscoDuroExterno/Ivan/Ivan/cushing_longitudinal/Run_descargas/fastq_1_y_2/metadatos_bacterias.RDS")
+#saveRDS(taxa, file="../../../../../../../media/DiscoDuroExterno/Ivan/Ivan/cushing_longitudinal/Run_descargas/fastq_1_y_2/metadatos_bacterias.RDS")
 
 
 #       - Fase 8 -
@@ -209,6 +213,7 @@ saveRDS(taxa, file="../../../../../../../media/DiscoDuroExterno/Ivan/Ivan/cushin
 metadatos_bacterias # metadatos
 taxa.print # tax table
 tabla_forward_reverse.nochim # otu table
+View(tabla_forward_reverse.nochim)
 
 #       -------- Fase 9: Phyloseq ----------------------------
 
@@ -254,37 +259,37 @@ View(tabla_forward_reverse.nochim)
 rownames(metadatos_bacterias) <- metadatos_bacterias$Run
 View(metadatos_bacterias)
 
-ps_cs_lg_sanos <- phyloseq(otu_table(tabla_forward_reverse.nochim, taxa_are_rows=FALSE), 
+ps_cs_lg_ob_cs_rec <- phyloseq(otu_table(tabla_forward_reverse.nochim, taxa_are_rows=FALSE), 
                            sample_data(metadatos_bacterias), 
                            tax_table(taxa))
 
-ps_cs_lg_sanos
+ps_cs_lg_ob_cs_rec
 
-sample_names(ps_cs_lg_sanos)
-taxa_names(ps_cs_lg_sanos)
+sample_names(ps_cs_lg_ob_cs_rec)
+taxa_names(ps_cs_lg_ob_cs_rec)
 
-Biostrings::DNAStringSet(taxa_names(ps_cs_lg_sanos))
+Biostrings::DNAStringSet(taxa_names(ps_cs_lg_ob_cs_rec))
 
 
 
-ps_cs_lg_sanos <- prune_samples(sample_names(ps_cs_lg_sanos) != "Mock", ps_cs_lg_sanos) # Remove mock sample
-dna <- Biostrings::DNAStringSet(taxa_names(ps_cs_lg_sanos))
-names(dna) <- taxa_names(ps_cs_lg_sanos)
+ps_cs_lg_ob_cs_rec <- prune_samples(sample_names(ps_cs_lg_ob_cs_rec) != "Mock", ps_cs_lg_ob_cs_rec) # Remove mock sample
+dna <- Biostrings::DNAStringSet(taxa_names(ps_cs_lg_ob_cs_rec))
+names(dna) <- taxa_names(ps_cs_lg_ob_cs_rec)
 
-ps_cs_lg_sanos <- merge_phyloseq(ps_cs_lg_sanos, dna)
+ps_cs_lg_ob_cs_rec <- merge_phyloseq(ps_cs_lg_ob_cs_rec, dna)
 
-taxa_names(ps_cs_lg_sanos) <- paste0("ASV", seq(ntaxa(ps_cs_lg_sanos)))
+taxa_names(ps_cs_lg_ob_cs_rec) <- paste0("ASV", seq(ntaxa(ps_cs_lg_ob_cs_rec)))
 
-taxa_names(ps_cs_lg_sanos)
+taxa_names(ps_cs_lg_ob_cs_rec)
 
-saveRDS(ps_cs_lg_sanos,file="03_Results/ps_cs_lg_sanos.RDS") # modifique el nombre del archivo
+saveRDS(ps_cs_lg_ob_cs_rec,file="03_Results/ps_cs_lg_ob_cs_rec.RDS") # modifique el nombre del archivo
 
 
 #--------------llegue hasta aquí --------#
 
 # RANK abundance ---------------------
 # calculo de de la abundancia de cada taxon
-ab_tax <- taxa_sums(ps_cs_lg_sanos)
+ab_tax <- taxa_sums(ps_cs_lg_ob_cs_rec)
 
 # Abundancias ordenadas de mayor a menor
 ab_tax_ord <- sort(ab_tax, decreasing = TRUE)
@@ -307,7 +312,7 @@ barplot(ab_tax_ord,
 # =========================================
 
 
-rel_ab <- transform_sample_counts(ps_cs_lg_sanos, function(x) x / sum(x))
+rel_ab <- transform_sample_counts(ps_cs_lg_ob_cs_rec, function(x) x / sum(x))
 
 
 # quitando el borde negro
@@ -316,13 +321,13 @@ sample_data(rel_ab)$weight <- as.numeric(sample_data(rel_ab)$weight)
 str(sample_data(rel_ab))
 
 
-plot_bar(rel_ab, x= "gender", fill = "Order") +
+plot_bar(rel_ab, x= "Sample_name", fill = "Class") +
   geom_bar(stat = "identity", position = "stack", color = NA) +
   scale_y_continuous(labels = scales::percent) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-
+# voy aquí
 
 df <- psmelt(rel_ab)
 
