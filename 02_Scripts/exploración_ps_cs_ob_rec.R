@@ -3,11 +3,12 @@
 library(phyloseq)
 library(tidyverse)
 
-readRDS("03_Results/ps_cs_lg_ob_cs_rec.RDS") -> ps_cs_lg_ob_cs_rec
+readRDS("03_Results/objetos_phyloseq//ps_cs_lg_ob_cs_rec.RDS") -> ps_cs_lg_ob_cs_rec
 
 
 # ==========================================================
 ps_cs_lg_ob_cs_rec
+ps_metagenomico_variante
 sample_data(ps_cs_lg_ob_cs_rec) -> metadatos_df
 
 as_data_frame(metadatos_df) -> metadatos_df

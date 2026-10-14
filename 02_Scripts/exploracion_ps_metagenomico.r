@@ -228,3 +228,125 @@ g <- g +
 g
 
 
+
+#================================================================================0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ===================================================================
+#Para diversidad beta y separación entre muestras:
+  
+ps_genero <- tax_glom(ps_metagenomico_variante, taxrank = "Genus", NArm = FALSE)
+ps_genero_rel <- transform_sample_counts(ps_genero, function(x) x / sum(x))
+
+head(sample_data(ps_genero_rel))
+
+  # Distancia Bray-Curtis
+dist_bc_all <- distance(ps_metagenomico_variante, method = "bray")
+
+# PCoA
+ord_pcoa_all <- ordinate(ps_genero_rel, method = "PCoA", distance = dist_bc_all)
+
+all(rownames(ord_pcoa_all$vectors) %in% sample_names(ps_genero_rel))
+# sale TRUE
+dim(ord_pcoa_all$vectors)                 # debe ser 100 filas
+head(rownames(ord_pcoa_all$vectors))      # si sale NULL, ese es el problema
+head(attr(dist_bc_all, "Labels"), 60)         # ¿la distancia conserva los nombres?
+find("distance")                          # debe salir solo "package:phyloseq"
+
+# Visualización
+plot_ordination(ps_genero_rel, ord_pcoa_all, color = "Grupo" )
+
+#También puedes usar otros métodos de ordenación:
+  
+  # NMDS con Bray-Curtis
+ord_nmds <- ordinate(ps_genero_rel, method = "NMDS", distance = "bray")
+plot_ordination(ps_genero_rel, ord_nmds, color = "Grupo", shape =
+                  "Grupo")
+
+#Otras funciones prácticas:
+
+sample_data(ps_genero_rel)
+  
+plot_heatmap(ps_genero_rel, sample.label = "Grupo")
+
+plot_tree(ps_genero_rel, color = "Grupo")
+
+plot_network(ps_genero_rel, distance = "bray", max.dist = 0.3)
+
+sample_sums(ps_genero_rel)  # profundidad de secuenciación por muestra
+taxa_sums(ps)    # abundancia total por taxón
+
+# ===========================================================================================#
+
+
+
+
+
+subset_samples(ps_cs_lg_ob_cs_rec, fenotipo == "Cushing") -> ps_cs_activo
+ps_cs_activo
+#saveRDS(ps_cs_activo, "03_Results/ps_cs_activo.RDS")
+
+subset_samples(ps_cs_lg_ob_cs_rec, fenotipo == "Remision") -> ps_cs_remision
+ps_cs_remision
+#saveRDS(ps_cs_remision, "03_Results/ps_cs_remision.RDS")
+
+subset_samples(ps_cs_lg_ob_cs_rec, fenotipo == "Obesos") -> ps_obesos
+ps_obesos
+#saveRDS(ps_obesos, "03_Results/ps_obesos.RDS")
+
+
