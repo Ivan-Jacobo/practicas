@@ -21,8 +21,9 @@ sample_data(intento) -> sample_data(ps_metagenomico_variante)
 
 View(otu_table(ps_metagenomico_variante))
 
-
-
+#saveRDS(ps_metagenomico_variante, "03_Results/objetos_phyloseq/ps_metagenomico_variante.RDS")
+        
+        
 estimate_richness(ps_metagenomico_variante, measures = c("Observed", "Chao1", "Shannon", "Simpson"))
 plot_richness(ps_metagenomico_variante, x = "Grupo", measures = c("Observed","Shannon", "Chao1", "Simpson"), color = "Grupo")
 head(otu_table(ps_metagenomico_variante))
