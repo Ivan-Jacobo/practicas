@@ -213,6 +213,24 @@ head(names(bracken_lista), 101)
 
 library(dplyr)
 
+
+
+archivos_bracken <- list.files(
+  path = directorio,
+  pattern = "^(Control|CS)[0-9]+\\.bracken$",
+  full.names = TRUE
+)
+
+bracken_lista <- lapply(archivos_bracken, read.delim)
+
+names(bracken_lista) <- sub(
+  "\\.bracken$", "",
+  basename(archivos_bracken)
+)
+
+
+
+
 bracken_seleccion <- lapply(names(bracken_lista), function(muestra) {
   
   df <- bracken_lista[[muestra]]
@@ -237,7 +255,22 @@ View(bracken_combinado)
 
 
 
+# ===================00
 
+
+# Reemplazar NA por 0 solo en las columnas de abundancia
+columnas_muestras <- grep(
+  "^(Control|CS)[0-9]+$",
+  names(bracken_combinado),
+  value = TRUE
+)
+
+bracken_combinado <- bracken_combinado %>%
+  mutate(
+    across(all_of(columnas_muestras), ~ tidyr::replace_na(.x, 0))
+  )
+
+# ===============
 
 
 
@@ -417,7 +450,8 @@ otu <- otu_table(
 dim(otu)
 View(otu)
 
-
+sum(is.na(otu))
+sum(!is.finite(otu))
 
 
 
@@ -479,13 +513,13 @@ all(sample_names(otu) == rownames(metadata))
 # 9)
 
 # Ensamblar objeto phyloseq
-ps_cushing <- phyloseq(
+ps_metagenomico <- phyloseq(
   otu,
   tax,
   sampledata
 )
 
 # Verificar el objeto
-ps_cushing
+ps_metagenomico
 
-saveRDS(ps_cushing, "03_Results/phyloseq_ps_cushing.RDS")
+saveRDS(ps_metagenomico, "03_Results/ps_metagenomico.RDS")
