@@ -1,13 +1,31 @@
 # Explorando phyloseq
 
 library(phyloseq)
-readRDS("03_Results/ps_metagenomico_variante.RDS") -> ps_metagenomico_variante
+readRDS("03_Results/objetos_phyloseq/ps_metagenomico_variante.RDS") -> ps_metagenomico_variante
+
+sample_names(ps_metagenomico_variante) -> Nombres
+
+sample_data(ps_metagenomico_variante) -> df_ps_meta
+
+as.data.frame(df_ps_meta) -> df_ps_meta
+
+intento <- data.frame(
+  Nombres = Nombres,
+  Grupo   = c(rep("Control", 50), rep("Cushing", 50))
+)
+
+
+rownames(intento) <- Nombres
+
+sample_data(intento) -> sample_data(ps_metagenomico_variante)
+
+View(otu_table(ps_metagenomico_variante))
 
 
 
 estimate_richness(ps_metagenomico_variante, measures = c("Observed", "Chao1", "Shannon", "Simpson"))
-plot_richness(ps_metagenomico, x = "Grupo", measures = c("Observed","Shannon", "Chao1", "Simpson"), color = "Grupo")
-
+plot_richness(ps_metagenomico_variante, x = "Grupo", measures = c("Observed","Shannon", "Chao1", "Simpson"), color = "Grupo")
+head(otu_table(ps_metagenomico_variante))
 
 # Nota:
   # R manda un aviso que dice que no hay singletons y doubletons
