@@ -425,7 +425,9 @@ taxa.tree
 
 #saveRDS(mpse_metagenomico, "03_Results/objetos_mpse/mpse_metagenomico.RDS")
 
+readRDS("03_Results/objetos_mpse/mpse_metagenomico.RDS") -> mpse_metagenomico
 
+mpse_metagenomico
 
 # ===============================================================================
 
@@ -518,8 +520,8 @@ p6 <- p5 +
   scale_size_continuous(range=c(1, 3)) +
   scale_fill_manual(values=c("#1B9E77", "#D95F02"))
 
-
-p6 + theme(
+# A partir de aqui se traba todo, debe de ser un grafico MUY pesado
+#p6 + theme(
   legend.key.height = unit(0.3, "cm"),
   legend.key.width = unit(0.3, "cm"),
   legend.spacing.y = unit(0.02, "cm"),
@@ -581,7 +583,8 @@ cladograma_taxones_dif
 
 
 
-
+mpse_metagenomico %>% 
+  mp_plo
 
 
 
@@ -636,3 +639,17 @@ aplot::plot_list(abdif_box, abdif_bar)
 
 
 
+# =================================================
+
+
+grafico.mahattan <- mpse_metagenomico %>%
+  mp_plot_diff_manhattan(
+    .group = Sign_Grupo,
+    .y = fdr,
+    .size = 2.4,
+    taxa.class = c('OTU', 'Genus'),
+    anno.taxa.class = Phylum
+  )
+grafico.mahattan
+
+mpse_metagenomico
