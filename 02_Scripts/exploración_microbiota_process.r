@@ -79,7 +79,7 @@ mpse_metagenomico
 
 # ============================ #
 
-Graficos de diversidad diferemncial de acuerdo a diferentes indices
+#Graficos de diversidad diferemncial de acuerdo a diferentes indices
 
 mpse_metagenomico %<>%
   mp_cal_alpha(.abundance=RareAbundance)
@@ -423,7 +423,7 @@ taxa.tree <- mpse_metagenomico  %>%
 taxa.tree %>% select(label, nodeClass, LDAupper, LDAmean, LDAlower, Sign_Grupo, pvalue, fdr) %>% dplyr::filter(!is.na(fdr))
 taxa.tree
 
-
+#saveRDS(mpse_metagenomico, "03_Results/objetos_mpse/mpse_metagenomico.RDS")
 
 
 
@@ -529,6 +529,58 @@ p6 + theme(
 
 
 mpse_metagenomico
+# ===============================================================
+
+
+
+flag <- packageVersion("ggnewscale") >= "0.5.0"
+new.fill <- ifelse(flag, "fill_ggnewscale_1", "fill_new_new")
+new.fill2 <- ifelse(flag , "fill_ggnewscale_2", "fill_new")
+
+w <- mpse_metagenomico %>%
+  mp_plot_diff_res(
+    group.abun = TRUE,
+    pwidth.abun=0.1
+  ) 
+# if version of `ggnewscale` is >= 0.5.0, you can also use p$ggnewscale to view the renamed scales.
+w <- w  +
+  scale_fill_manual(values=c("deepskyblue", "orange")) +
+  scale_fill_manual(
+    aesthetics = new.fill2, # The fill aes was renamed to `new.fill` for the abundance dotplot layer
+    values = c("deepskyblue", "orange")
+  ) +
+  scale_fill_manual(
+    aesthetics = new.fill, # The fill aes for hight light layer of tree was renamed to `new.fill2`
+    values = c("#E41A1C", "#377EB8", "#4DAF4A",
+               "#984EA3", "#FF7F00", "#FFFF33",
+               "#A65628", "#F781BF", "#999999"
+    )
+  )
+w
+
+
+
+
+
+# ==============================================
+
+cladograma_taxones_dif <- mpse_metagenomico %>%
+  mp_plot_diff_cladogram(
+    label.size = 2.5,
+    hilight.alpha = .3,
+    bg.tree.size = .5,
+    bg.point.size = 2,
+    bg.point.stroke = .25
+  ) +
+  scale_fill_diff_cladogram( # set the color of different group.
+    values = c('deepskyblue', 'orange')
+  ) +
+  scale_size_continuous(range = c(1, 4))
+
+cladograma_taxones_dif
+
+
+
 
 
 
